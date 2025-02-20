@@ -12,7 +12,7 @@ app.get("/result/:id", async (req, res): Promise<any> => {
   const { id } = req.params;
 
   try {
-    const solutions = await client.lRange("solutions", 0, -1);
+    const solutions = await client.lRange("SOLUTIONS_QUEUE", 0, -1);
 
     const parsedsolutions = solutions
       .map((res) => JSON.parse(res))
@@ -24,16 +24,8 @@ app.get("/result/:id", async (req, res): Promise<any> => {
         error: `No result found for problemId: ${id}`,
       });
     }
-
     const latestResult = parsedsolutions[0];
-
-    console.log("LATEST RESULT ::: ", latestResult);
-
-    if (latestResult.success) {
-      return res.status(200).json(latestResult);
-    } else {
-      return res.status(400).json(latestResult);
-    }
+    return res.status(200).json(latestResult);
   } catch (error) {
     console.error("Error fetching solutions:", error);
     res.status(500).json({
@@ -55,7 +47,7 @@ app.post("/submit", async (req, res): Promise<any> => {
 
   try {
     await client.lPush(
-      "submissions",
+      "SUBMISSIONS_QUEUE",
       JSON.stringify({ code, language, problemId })
     );
     res.status(200).json({ success: true, message: "Submission received." });
@@ -77,7 +69,7 @@ async function startServer() {
     });
   } catch (error) {
     console.error("Failed to connect to Redis", error);
-    setTimeout(startServer, 5000); // Retry connection after 5 seconds
+    setTimeout(startServer, 5000);
   }
 }
 

@@ -17,6 +17,7 @@
     "child_process": "^1.0.2",
     "express": "^4.21.2",
     "fs": "^0.0.1-security",
+    "mongoose": "^8.10.1",
     "nodemon": "^3.1.9",
     "path": "^0.12.7",
     "redis": "^4.7.0"
