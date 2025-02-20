@@ -1,10 +1,30 @@
 import express from "express";
+import mongoose from "mongoose";
+import cors from "cors";
+import dotenv from "dotenv";
+dotenv.config();
 import { createClient } from "redis";
 
 const client = createClient();
 const app = express();
 
 app.use(express.json());
+
+const port = process.env.PORT || 3001;
+mongoose
+  .connect(process.env.MONGO_URL || "", {
+    user: process.env.DB_USERNAME,
+    pass: process.env.DB_PASSWORD,
+  })
+  .then(async () => {
+    console.log("Connected to MongoDB");
+    await mongoose.connection.syncIndexes();
+  })
+  .catch((err) => {
+    console.error("Error connecting to MongoDB: ", err);
+  });
+
+app.use(cors());
 
 client.on("error", (err) => console.log("Redis Client Error", err));
 
@@ -64,8 +84,8 @@ async function startServer() {
     await client.connect();
     console.log("Connected to Redis");
 
-    app.listen(3000, () => {
-      console.log("Server is running on port 3000");
+    app.listen(port, () => {
+      console.log("Server is running on port " , port);
     });
   } catch (error) {
     console.error("Failed to connect to Redis", error);
