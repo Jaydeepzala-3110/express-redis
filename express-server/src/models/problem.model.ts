@@ -5,10 +5,12 @@ const exampleSchema = new Schema({
     type: Schema.Types.Mixed,
     required: true,
   },
+
   output: {
     type: Schema.Types.Mixed,
     required: true,
   },
+
   explanation: {
     type: String,
   },

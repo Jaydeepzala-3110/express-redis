@@ -31,6 +31,16 @@ const userSchema = new Schema(
       type: Number,
       default: 0,
     },
+    role: {
+      type: String,
+      enum: ["user", "admin", "superAdmin"],
+      default: "user",
+    },
+    status: {
+      type: String,
+      enum: ["active", "deactive", "blocked"],
+      default: "active",
+    },
     solvedProblems: [
       {
         type: Schema.Types.ObjectId,
